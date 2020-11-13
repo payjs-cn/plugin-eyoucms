@@ -16,7 +16,7 @@ return array(
     'name' => 'PAYJS', // 插件名称
     'version' => 'v1.0.0', // 插件版本号
     'min_version' => 'v1.4.9', // CMS最低版本支持
-    'author' => 'dedemao', // 开发者
+    'author' => 'PAYJS', // 开发者
     'description' => '适用于易优CMS的Payjs支付插件', // 插件描述
     'litpic'    => '/weapp/Payjs/logo.png',
     'scene' => '0',  // 使用场景 0 PC+手机 1 手机 2 PC
