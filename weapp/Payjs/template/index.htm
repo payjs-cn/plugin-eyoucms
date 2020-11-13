@@ -1,0 +1,214 @@
+{include file="header.htm" /}
+<body class="bodystyle" style="overflow-y: scroll; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    {include file="bar.htm" /}
+    <div class="flexigrid">
+        <div class="mDiv">
+            <div class="ftitle">
+                <h3>订单列表</h3>
+                <h5>(共{$pageObj->totalRows}条数据)</h5>
+            </div>
+            <div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
+            <form class="navbar-form form-inline" action="{:weapp_url('Payjs/Payjs/index')}" method="get" onsubmit="layer_loading('正在处理');">
+                {$searchform.hidden|default=''}
+                <div class="sDiv">
+                    <div class="sDiv2">
+                        <input type="text" size="30" name="keywords" class="qsbox" placeholder="搜索订单号...">
+                        <input type="submit" class="btn" value="搜索">
+                    </div>
+                    <div class="sDiv2">
+                        <input type="button" class="btn" value="重置" onClick="window.location.href='{:weapp_url('Payjs/Payjs/index')}';">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="hDiv">
+            <div class="hDivBox">
+                <table cellspacing="0" cellpadding="0" style="width: 100%">
+                    <thead>
+                    <tr>
+                        <th class="sign w40" axis="col0">
+                            <div class="tc">选择</div>
+                        </th>
+                        <th class="w40">
+                            <div class="tc">ID</div>
+                        </th>
+                        <th class="w100">
+                            <div class="tc">订单类型</div>
+                        </th>
+
+                        <th class="w200">
+                            <div class="tc">订单标题</div>
+                        </th>
+                        <th class="w200">
+                            <div class="tc">订单号</div>
+                        </th>
+                        <th>
+                            <div class="tc">支付流水号</div>
+                        </th>
+                        <th class="w100">
+                            <div class="tc">订单金额</div>
+                        </th>
+                        <th class="w160">
+                            <div class="tc">订单状态</div>
+                        </th>
+                        <th class="w160">
+                            <div class="tc">创建时间</div>
+                        </th>
+                        <th class="w120">
+                            <div class="tc">操作</div>
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="bDiv" style="height: auto;">
+            <div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+                <table style="width: 100%">
+                    <tbody>
+                    {empty name="list"}
+                        <tr>
+                            <td class="no-data" align="center" axis="col0" colspan="50">
+                                <i class="fa fa-exclamation-circle"></i>没有符合条件的记录
+                            </td>
+                        </tr>
+                    {else/}
+                        {volist name="list" id="vo"}
+                        <tr>
+                            <td class="w40">
+                                <div class="tc"><input type="checkbox" name="ids[]" value="{$vo.id}"></div>
+                            </td>
+                            <td class="w40">
+                                <div class="tc">{$vo.id}</div>
+                            </td>
+                            <td class="w100">
+                                <div class="tc">
+                                    {$vo.type|getPayChannelName}
+                                </div>
+                            </td>
+                            <td class="w200">
+                                <div class="tc">{$vo.subject}</div>
+                            </td>
+                            <td class="w200">
+                                <div class="tc">{$vo.out_trade_no}</div>
+                            </td>
+                            <td>
+                                <div class="tc">{$vo.transaction_tid}</div>
+                            </td>
+                            <td class="w100">
+                                <div class="tc">{$vo.total_fee}</div>
+                            </td>
+                            <td class="w160">
+                                <div class="tc">{$vo.status|getPayStatus}</div>
+                            </td>
+                            <td class="w160">
+                                <div class="tc">{$vo.created_at}</div>
+                            </td>
+                            <td class="w120">
+                                <div class="tc">
+                                    <a href="{:weapp_url('Payjs/Payjs/detail',array('id'=>$vo['id']))}" class="btn blue"><i class="fa fa-pencil-square-o"></i>查看</a>
+                                    <?php
+                                        if($vo['status']==1):
+                                    ?>
+                                    <a class="btn red"  href="javascript:void(0)" data-url="{:weapp_url('Payjs/Payjs/del')}" data-id="{$vo.id}" onClick="delfun(this);"><i class="fa fa-trash-o"></i>删除</a>
+                                    <?php endif;?>
+                                    <?php
+                                        if($vo['status']==0):
+                                    ?>
+                                    <a class="btn red"  href="javascript:void(0)" data-url="{:weapp_url('Payjs/Payjs/refund')}" data-id="{$vo.id}" onClick="refund(this);"><i class="fa fa-trash-o"></i>退款</a>
+                                    <?php endif;?>
+                                </div>
+                            </td>
+                        </tr>
+                        {/volist}
+                    {/empty}
+                    </tbody>
+                </table>
+            </div>
+            <div class="iDiv" style="display: none;"></div>
+        </div>
+        <div class="tDiv">
+            <div class="tDiv2">
+                <div class="fbutton checkboxall">
+                    <input type="checkbox" onclick="javascript:$('input[name*=ids]').prop('checked',this.checked);">
+                </div>
+                <div class="fbutton">
+                    <a onclick="batch_del(this, 'ids');" data-url="{:weapp_url('Payjs/Payjs/del')}">
+                        <div class="add" title="批量删除">
+                            <span><i class="fa fa-close"></i>批量删除</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="fbutton">
+                    <a href="{:weapp_url('Payjs/Payjs/test')}" target="_blank">
+                        <div class="add" title="测试支付">
+                            <span><i class="fa fa-send"></i>测试支付</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div style="clear:both"></div>
+        </div>
+        <!--分页位置-->
+        {$pageStr}
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        // 表格行点击选中切换
+        $('#flexigrid > table>tbody >tr').click(function(){
+            $(this).toggleClass('trSelected');
+        });
+
+        // 点击刷新数据
+        $('.fa-refresh').click(function(){
+            window.location.reload();
+        });
+    });
+    function refund(obj) {
+
+        var url = $(obj).attr('data-url');
+
+        var deltype = $(obj).attr('data-deltype');
+        if ('pseudo' == deltype) {
+            delfun_pseudo(obj);
+        } else {
+            title = '确定要退款吗？';
+            btn = ['确定', '取消']; //按钮
+            layer.confirm(title, {
+                    title: false,
+                    btn: btn //按钮
+                }, function(){
+                    // 确定
+                    layer_loading('正在处理');
+                    $.ajax({
+                        type : 'POST',
+                        url : url,
+                        data : {del_id:$(obj).attr('data-id'), _ajax:1},
+                        dataType : 'json',
+                        success : function(data){
+                            layer.closeAll();
+                            if(data.code == 1){
+                                layer.msg(data.msg, {icon: 1});
+                                window.location.reload();
+                            }else{
+                                layer.alert(data.msg, {icon: 2, title:false});
+                            }
+                        },
+                        error:function(){
+                            layer.closeAll();
+                            layer.alert(ey_unknown_error, {icon: 2, title:false});
+                        }
+                    })
+                }, function(index){
+                    layer.close(index);
+                    return false;// 取消
+                }
+            );
+        }
+    }
+</script>
+{include file="footer.htm" /}
