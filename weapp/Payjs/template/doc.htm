@@ -1,0 +1,42 @@
+{include file="header.htm" /}
+<body class="bodystyle" style="overflow-y: scroll; cursor: default; -moz-user-select: inherit;">
+<div class="page">
+    {include file="bar.htm" /}
+    <div class="flexigrid">
+        <div class="mDiv" style="margin-left: 30px;">
+            <p style="font-size: 15px;line-height: 2em;">【如何支付】</p>
+            <ol style="font-size: 15px;line-height: 2em;">
+                <li>指定订单金额：
+                    http://yourname/?m=plugins&c=payjs&a=index&total_fee=0.01</li>
+
+                <li>指定订单号：
+                    http://yourname/?m=plugins&c=payjs&a=index&total_fee=0.01&out_trade_no=123456
+                </li>
+
+                <li>指定订单标题：
+                    http://yourname/?m=plugins&c=payjs&a=index&total_fee=0.01&subject=测试</li>
+
+                <li>指定支付通道：
+                    http://yourname/?m=plugins&c=payjs&a=index&total_fee=0.01&pay_channel=weixin</li>
+
+                <li>指定使用JSAPI支付
+                    http://yourname/?m=plugins&c=payjs&a=index&total_fee=0.01&pay_mode=jsapi</li>
+
+                <li>指定使用收银台支付
+                    http://yourname/?m=plugins&c=payjs&a=index&total_fee=0.01&pay_mode=cashier</li>
+
+                <li>全都指定：
+                    http://yourname/?m=plugins&c=payjs&a=index&total_fee=0.01?out_trade_no=123456&subject=测试&pay_channel=weixin </li>
+            </ol>
+            <p style="font-size: 15px;line-height: 2em;">【异步通知】</p>
+            <ol style="font-size: 15px;line-height: 2em;">
+                <li>异步通知在/application/plugins/controller/Payjs.php中的notify方法</li>
+            </ol>
+            <p style="font-size: 15px;line-height: 2em;">【退款】</p>
+            <ol style="font-size: 15px;line-height: 2em;">
+                <li>退款请参考application/plugins/model/PayjsOrders.php中的refund方法</li>
+            </ol>
+        </div>
+    </div>
+</div>
+{include file="footer.htm" /}

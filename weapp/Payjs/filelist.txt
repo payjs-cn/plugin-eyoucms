@@ -1,0 +1,5 @@
+application/plugins/controller/Payjs.php
+application/plugins/logic/PayjsLogic.php
+application/plugins/model/Payjs.php
+template/plugins/Payjs
+weapp/Payjs

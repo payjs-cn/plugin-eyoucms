@@ -1,0 +1,61 @@
+{include file="header.htm" /}
+<body class="bodystyle" style="overflow-y: scroll; cursor: default; -moz-user-select: inherit;">
+<div id="toolTipLayer" style="position: absolute; z-index: 9999; display: none; visibility: visible; left: 95px; top: 573px;"></div>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    {include file="bar.htm" /}
+    <form class="form-horizontal" id="post_form" action="{:weapp_url('Payjs/Payjs/conf')}" method="post">
+        <div class="ncap-form-default">
+            <dl class="row">
+                <dt class="tit">
+                    <label>商户号</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="mchid" id="mchid" value="{$data.mchid}" class="input-txt">
+                    <p class="notic">在payjs会员中心查看。</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label>通信密钥</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="appkey" id="appkey" value="{$data.appkey}" class="input-txt">
+                    <p class="notic">在payjs会员中心查看。</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label>支付通道</label>
+                </dt>
+                <dd class="opt">
+                    <select name="pay_channel" id="pay_channel">
+                        <?=getSelectFromArray(['all'=>'支付宝和微信','alipay'=>'支付宝','weixin'=>'微信'],$data['pay_channel'],false)?>
+                    </select>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label>回调地址</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="notify_url" id="notify_url" value="<?=$data['notify_url']?:url('plugins/payjs/notify','',true,true)?>" class="input-txt">
+                    <p class="notic">接收异步通知的回调地址（确保可以外网访问）</p>
+                </dd>
+            </dl>
+            <div class="bot">
+                <input type="hidden" name="code" value="{$row.code}" />
+                <a href="JavaScript:void(0);" onclick="checkForm();" class="ncap-btn-big ncap-btn-green" id="submitBtn">确认提交</a>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    // 判断输入框是否为空
+    function checkForm(){
+        layer_loading('正在处理');
+        $('#post_form').submit();
+    }
+</script>
+{include file="footer.htm" /}
